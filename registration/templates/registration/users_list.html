@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Users Directory Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    body { background-color: #f1f5f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    .navbar-custom { background-color: #1e293b !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    
+    .card { border: none; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); background-color: #ffffff; }
+    .table th { background-color: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
+    
+    .avatar-img { object-fit: cover; border-radius: 50%; border: 2px solid #cbd5e1; width: 45px; height: 45px; }
+    .avatar-placeholder { width: 45px; height: 45px; border-radius: 50%; background-color: #e2e8f0; color: #475569; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+    
+    .btn-teal { background-color: #0f766e; color: white; border: none; transition: all 0.2s; }
+    .btn-teal:hover { background-color: #115e59; color: white; transform: translateY(-1px); }
+    
+    .btn-action-edit { color: #475569; border: 1px solid #cbd5e1; background-color: #ffffff; font-size: 0.85rem; border-radius: 6px; padding: 5px 12px; text-decoration: none !important; }
+    .btn-action-edit:hover { background-color: #f8fafc; color: #1e293b; border-color: #94a3b8; }
+    .btn-action-delete { color: #ef4444; border: 1px solid #fecaca; background-color: #ffffff; font-size: 0.85rem; border-radius: 6px; padding: 5px 12px; text-decoration: none !important; }
+    .btn-action-delete:hover { background-color: #fef2f2; color: #dc2626; border-color: #fca5a5; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center fw-semibold text-white-50" href="#">
+        <i class="bi bi-folder-symlink-fill text-info me-2"></i> <span class="text-white">User</span>Directory
+      </a>
+      <div class="ms-auto d-flex align-items-center text-white">
+        <span class="me-3 small text-white-50"><i class="bi bi-person-badge me-1"></i> Operator: <strong class="text-white">{{ current_user }}</strong></span>
+        <a href="{% url 'registration:logout_html' %}" class="btn btn-outline-light btn-sm px-3 opacity-75"><i class="bi bi-box-arrow-right"></i> Sign Out</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 bg-white border-start border-success border-4" role="alert">
+          <i class="bi bi-check-circle-fill text-success me-2"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="text-dark fw-bold mb-0">Registered Users</h3>
+          <p class="text-muted small mb-0">Internal database of authorized user accounts</p>
+        </div>
+        <a href="{% url 'registration:user_create_html' %}" class="btn btn-teal d-flex align-items-center shadow-sm fw-medium px-3 py-2">
+          <i class="bi bi-plus-lg me-2"></i> Add New User
+        </a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center" style="width: 5%">#</th>
+              <th scope="col" style="width: 10%">Avatar</th>
+              <th scope="col">First Name</th>
+              <th scope="col">Last Name</th>
+              <th scope="col">Email Address</th>
+              <th scope="col" style="width: 12%">Gender</th>
+              <th scope="col">Date Registered</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td class="text-center text-muted small fw-medium">{{ forloop.counter }}</td>
+              <td>
+                {% if u.profile_picture %}
+                  <img src="{{ u.profile_picture.url }}" alt="Profile" class="avatar-img shadow-sm">
+                {% else %}
+                  <div class="avatar-placeholder shadow-sm">
+                    {{ u.first_name|slice:":1" }}{{ u.last_name|slice:":1" }}
+                  </div>
+                {% endif %}
+              </td>
+              <td class="fw-semibold text-dark">{{ u.first_name }}</td>
+              <td class="fw-semibold text-dark">{{ u.last_name }}</td>
+              <td class="text-secondary small">{{ u.email }}</td>
+              <td>
+                {% if u.gender == "Male" %}
+                  <span class="badge bg-slate text-secondary border px-2 py-1.5" style="background-color: #f1f5f9; color: #475569 !important;"><i class="bi bi-gender-male text-primary"></i> Male</span>
+                {% elif u.gender == "Female" %}
+                  <span class="badge bg-slate text-secondary border px-2 py-1.5" style="background-color: #f1f5f9; color: #475569 !important;"><i class="bi bi-gender-female text-danger"></i> Female</span>
+                {% else %}
+                  <span class="badge bg-slate text-secondary border px-2 py-1.5" style="background-color: #f1f5f9; color: #475569 !important;"><i class="bi bi-gender-ambiguous"></i> Other</span>
+                {% endif %}
+              </td>
+              <td class="text-muted small">
+                {{ u.date_registered|date:"Y-m-d" }} <span class="ms-1 text-black-50">{{ u.date_registered|date:"H:i" }}</span>
+              </td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2">
+                  <a href="{% url 'registration:user_update_html' u.id %}" class="btn-action-edit" title="Modify">
+                    <i class="bi bi-pencil-square"></i> Edit
+                  </a>
+                  <a href="{% url 'registration:user_delete_html' u.id %}" class="btn-action-delete" title="Remove">
+                    <i class="bi bi-trash"></i> Delete
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center py-5 text-muted">No users registered yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

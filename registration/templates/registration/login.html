@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>System Authentication</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f1f5f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); background-color: #ffffff; width: 100%; max-width: 400px; }
+        .card-header-slate { background-color: #1e293b; color: #ffffff; border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; }
+        .form-label { font-weight: 500; color: #334155; font-size: 0.9rem; }
+        .form-control:focus { border-color: #0f766e; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15); }
+        .btn-teal { background-color: #0f766e; color: white; border: none; font-weight: 500; transition: all 0.2s; }
+        .btn-teal:hover { background-color: #115e59; color: white; transform: translateY(-1px); }
+        .brand-text { font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="container login-container">
+    <div class="card">
+        <div class="card-header card-header-slate py-4 text-center">
+            <div class="brand-text mb-1"><i class="bi bi-shield-lock-fill text-info me-1"></i> Management Portal</div>
+            <h4 class="mb-0 fw-semibold text-white">Account Sign In</h4>
+        </div>
+        
+        <div class="card-body p-4">
+            {% if error %}
+                <div class="alert alert-danger border-0 bg-danger-subtle text-danger small d-flex align-items-center mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2 fs-6"></i>
+                    <div>{{ error }}</div>
+                </div>
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                        <input type="email" name="email" class="form-control border-start-0 ps-1" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+                        <input type="password" name="password" class="form-control border-start-0 ps-1" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-teal w-100 py-2.5 shadow-sm rounded-3">
+                    Login <i class="bi bi-arrow-right-short ms-1"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
